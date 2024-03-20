@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    environment {
+        APPLICATION_NAME = 'gboex-automationtest-portalintegracao'
+        SOLUTION = 'gboex-automationtest-portalintegracao-teste-jenkins.sln'                
+        
+        SLACK_CHANNEL_BUILD = 'jenkins-builds'
+        SLACK_CHANNEL_CI = 'jenkins-ci'
+        ENV_NAME = ''
+        CI_DIR = ''
+    }
+    stages {           
+        stage('restore') {
+            steps {
+                bat "dotnet clean ${env.SOLUTION}"
+                bat "dotnet restore ${env.SOLUTION}"
+            }
+        }
+        stage('build') {
+           steps {               
+               bat "dotnet build -c Debug --no-restore ${env.SOLUTION}"
+            }
+        }
+        stage('run tests') {
+            steps {
+                bat "dotnet test --no-restore"
+            }
+        }
+        stage('generate allure report') {
+            steps {
+                bat ""
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                slackSend(color:'good', channel: env.SLACK_CHANNEL_BUILD, message: ":smiling_face_with_3_hearts: ${env.APPLICATION_NAME} - #${env.BUILD_NUMBER} Success (<${env.BUILD_URL}|Open>)");
+            }
+        }
+        unstable {
+            echo "Unstabled"
+        }
+        failure {  
+           script {
+                slackSend (color:'danger', channel: env.SLACK_CHANNEL_BUILD, message: ":shocked_face_with_exploding_head: ${env.APPLICATION_NAME} - #${env.BUILD_NUMBER} Failure (<${env.BUILD_URL}|Open>)");
+           }
+        } 
+        changed {
+            echo "Changed"
+        }
+    }
+}
