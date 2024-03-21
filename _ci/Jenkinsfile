@@ -8,6 +8,7 @@ pipeline {
         SLACK_CHANNEL_CI = 'jenkins-ci'
         ENV_NAME = ''
         CI_DIR = ''
+        CHROMEDRIVER_VERSION = '123.0.6312.5800'
     }
     stages {           
         stage('restore') {
@@ -23,16 +24,17 @@ pipeline {
         }
         stage('run tests') {
             steps {
+                bat "set PATH=C:\\chromedriver\\${env.CHROMEDRIVER_VERSION};%PATH%"
                 bat "dotnet test --no-restore"
             }
         }
         stage('generate allure report') {
             steps {
-                allure commandline: 'AllureAuto', 
+                allure commandline: 'Allure', 
                 includeProperties: false, 
                 jdk: '', 
-                report: 'gboex-automationtest-portalintegracao\\bin\\Debug\\net6.0\\allure-report', 
-                results: [[path: 'gboex-automationtest-portalintegracao\\bin\\Debug\\net6.0\\allure-results']]
+                report: 'gboex-automationtest-regulacao\\bin\\Debug\\net6.0\\allure-report', 
+                results: [[path: 'gboex-automationtest-regulacao\\bin\\Debug\\net6.0\\allure-results']]
             }
         }
     }
