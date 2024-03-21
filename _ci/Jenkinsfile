@@ -33,8 +33,8 @@ pipeline {
                 allure commandline: 'Allure', 
                 includeProperties: false, 
                 jdk: '', 
-                report: 'gboex-automationtest-regulacao\\bin\\Debug\\net6.0\\allure-report', 
-                results: [[path: 'gboex-automationtest-regulacao\\bin\\Debug\\net6.0\\allure-results']]
+                report: 'gboex-automationtest-portalintegracao\\bin\\Debug\\net6.0\\allure-report', 
+                results: [[path: 'gboex-automationtest-portalintegracao\\bin\\Debug\\net6.0\\allure-results']]
             }
         }
     }
