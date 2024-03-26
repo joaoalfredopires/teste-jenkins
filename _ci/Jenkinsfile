@@ -24,8 +24,15 @@ pipeline {
         }
         stage('run tests') {
             steps {
-                bat "set PATH=C:\\chromedriver\\${env.CHROMEDRIVER_VERSION};%PATH%"
-                bat "dotnet test --no-restore"
+                script {
+                    try {
+                        bat "set PATH=\\gboex-automationtest-portalintegracao\\bin\\Debug\\net6.0\\chromedriver.exe${env.CHROMEDRIVER_VERSION};%PATH%"
+                        bat "dotnet test --verbosity detailed --blame-hang-timeout 60000"
+                    } catch (Exception e) {
+                        echo "Erro durante a execução dos testes: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                    }
+                }    
             }
         }
         stage('generate allure report') {
